@@ -1,0 +1,58 @@
+<p-toast></p-toast>
+<h1 class="text-center">Contact</h1>
+<form [formGroup]="contactForm"  (ngSubmit)="send()" novalidate style="margin-left: 15px;">
+ 
+  <div class="field">
+    <label for="email" class="block">Email</label>
+    <input
+      type="email"
+      pInputText
+      placeholder="Email"
+      formControlName="email"
+      style="width: 90%;"
+      (blur)="contactForm.get('email')?.markAsTouched()"
+    />
+    <small
+      class="p-error block"
+      *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.dirty  && !contactForm.get('email')?.errors?.['email']" 
+    >
+      Email is required
+    </small>
+    <small class="p-error block" *ngIf="contactForm.get('email')?.errors?.['email']  && contactForm.get('email')?.touched ">
+        Please enter a valid email address.
+    </small>
+  </div>
+
+  
+  <div class="field">
+    <label for="message" class="block">Message</label>
+    <textarea
+      pInputTextarea
+      formControlName="message"
+      style="width: 90%; height: 150px;"
+      (blur)="contactForm.get('message')?.markAsTouched()"
+    ></textarea>
+    <small
+      class="p-error block"
+      *ngIf="
+        contactForm.get('message')?.invalid &&
+        contactForm.get('message')?.dirty && 
+        !contactForm.get('message')?.errors?.['maxlength']
+      "
+    >
+      Message is required
+    </small>
+    <small  class="p-error block" *ngIf="contactForm.get('message')?.errors?.maxlength?.actualLength > 300  && contactForm.get('message')?.touched">
+        Message must be less than 300 characters.
+      </small>
+  </div>
+
+
+  <button
+    pButton
+    type="submit"
+    label="Send"
+   
+    [disabled]="contactForm.invalid"
+  ></button>
+</form>

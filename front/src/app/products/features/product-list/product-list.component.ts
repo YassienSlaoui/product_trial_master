@@ -6,7 +6,11 @@ import { ButtonModule } from "primeng/button";
 import { CardModule } from "primeng/card";
 import { DataViewModule } from 'primeng/dataview';
 import { DialogModule } from 'primeng/dialog';
-
+import { CommonModule } from '@angular/common';
+import { SharedModule } from "app/shared/sharedModule";
+import { PanelService } from "app/panel/data-access/panel.service";
+import { ToastModule } from "primeng/toast";
+import { MessageService } from "primeng/api";
 const emptyProduct: Product = {
   id: 0,
   code: "",
@@ -29,11 +33,13 @@ const emptyProduct: Product = {
   templateUrl: "./product-list.component.html",
   styleUrls: ["./product-list.component.scss"],
   standalone: true,
-  imports: [DataViewModule, CardModule, ButtonModule, DialogModule, ProductFormComponent],
+  imports: [ToastModule,SharedModule,CommonModule,DataViewModule, CardModule, ButtonModule, DialogModule, ProductFormComponent],
+  providers:[MessageService]
 })
 export class ProductListComponent implements OnInit {
   private readonly productsService = inject(ProductsService);
-
+  private readonly panelService = inject(PanelService);
+  private readonly messageService = inject(MessageService);
   public readonly products = this.productsService.products;
 
   public isDialogVisible = false;
@@ -60,6 +66,7 @@ export class ProductListComponent implements OnInit {
     this.productsService.delete(product.id).subscribe();
   }
 
+
   public onSave(product: Product) {
     if (this.isCreation) {
       this.productsService.create(product).subscribe();
@@ -75,5 +82,14 @@ export class ProductListComponent implements OnInit {
 
   private closeDialog() {
     this.isDialogVisible = false;
+  }
+
+  public addToPanel(product:Product){
+      this.panelService.AddToPanel(product);
+       this.messageService.add({
+        severity: 'success',
+        summary: 'Succès',
+        detail: 'Product added to panel successfully'
+      });
   }
 }
